@@ -1,35 +1,57 @@
-import Column from "./Column"; 
-import { DragDropContext } from "@hello-pangea/dnd";
-import type { DropResult } from "@hello-pangea/dnd";
-import { useTasks } from "../context/TaskContext";
+import React from 'react';
+import { Droppable, Draggable } from '@hello-pangea/dnd';
+import type { BoardProps } from '../types';
+import '../main.css'; 
+import '../components/CardModal.css';
 
-const Board = () => {
-  const { tasks, updateTask } = useTasks();
-  const columns = ["to do", "in progress", "done"];
-
-  const onDragEnd = (result: DropResult) => {
-    const { destination, source, draggableId } = result;
-    if (!destination) return;
-    if (
-      destination.droppableId === source.droppableId &&
-      destination.index === source.index
-    ) return;
-
-    const taskId = Number(draggableId);
-    const task = tasks.find((t) => t.id === taskId);
-    if (!task) return;
-
-    updateTask({ ...task, column: destination.droppableId });
-  };
-
+const Board: React.FC<BoardProps> = ({ columns, cards, onCardClick, onAddCard }) => {
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
-      <div className="board">
-        {columns.map((col) => (
-          <Column key={col} title={col.toUpperCase()} column={col} />
-        ))}
-      </div>
-    </DragDropContext>
+    <div className="board-container">
+      {columns.map((column) => {
+        const cardsInColumn = cards.filter(card => card.columnId === column.id);
+
+        return (
+          <Droppable key={column.id} droppableId={column.id}>
+            {(provided) => (
+              <div
+                className="column"
+                {...provided.droppableProps}
+                ref={provided.innerRef}
+              >
+                <h2>{column.title}</h2>
+                {cardsInColumn.map((card, index) => (
+                  <Draggable key={card.id} draggableId={card.id} index={index}>
+                    {(provided) => (
+                      <div
+                        className="card"
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        onClick={() => onCardClick(card)}
+                        style={provided.draggableProps.style}
+                      >
+                        <h3>{card.title}</h3>
+                        <p>{card.description}</p>
+                      </div>
+                    )}
+                  </Draggable>
+                ))}
+
+                {provided.placeholder}
+
+                <button
+                  onClick={() => onAddCard(column.id)}
+                  className="add-card-button"
+                  aria-label={`Add card to ${column.title}`}
+                >
+                  +
+                </button>
+              </div>
+            )}
+          </Droppable>
+        );
+      })}
+    </div>
   );
 };
 

@@ -3,6 +3,7 @@ import TaskCard from "../components/TaskCard";
 import { useTasks } from "../context/TaskContext";
 import "../main.css";
 
+
 interface Props {
     title: string;
     column: string;

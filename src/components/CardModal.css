@@ -42,3 +42,41 @@
     color: var(--black);
 }
 
+
+.board-container {
+    display: flex;
+    gap: 1rem;
+}
+
+.column {
+  border: 1px solid black;
+  padding: 1rem;
+  min-width: 200px;
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+}
+
+.card {
+  user-select: none;
+  padding: 16px;
+  margin-bottom: 8px;
+  min-height: 50px;
+  background-color: #fff;
+  color: black;
+  border: 1px solid gray;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.add-card-button {
+  margin-top: auto;
+  padding: 8px;
+  font-size: 24px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  color: #007bff;
+  align-self: center;
+}
+

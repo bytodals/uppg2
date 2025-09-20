@@ -1,42 +1,47 @@
-import React, { useState } from 'react';
-import { DragDropContext, DropResult } from '@hello-pangea/dnd';
+// src/App.tsx
+import { useState } from 'react';
+import { DragDropContext, type DropResult } from '@hello-pangea/dnd';
 import { Routes, Route } from 'react-router-dom';
-
-import type { Card } from './types';
-import type { Column } from './types';
 import Board from './components/Board';
-import CardModal from './components/CardModal';
+import ColumnView from './components/ColumnView'; 
+import type { Card, ColumnModel } from './types';
+import './main.css';
+import './components/CardModal.css';
 
-import initialCards from './components/TaskCard';
-import initialColumns from './components/Column'; 
-import TaskCard from './components/TaskCard';
+const initialCards: Card[] = [
+
+];
+
+const initialColumns: ColumnModel[] = [
+  { id: 'todo', title: 'To Do' },
+  { id: 'in-progress', title: 'In Progress' },
+  { id: 'done', title: 'Done' },
+];
 
 function App() {
   const [cards, setCards] = useState<Card[]>(initialCards);
-  const [selectedCard, setSelectedCard] = useState<Card | null>(null);
-  const [creatingCardForColumn, setCreatingCardForColumn] = useState<string | null>(null);
-
+  const [columns] = useState<ColumnModel[]>(initialColumns);
+  const [, setSelectedCard] = useState<Card | null>(null);
+  const [, setCreatingCardForColumn] = useState<string | null>(null);
 
   const handleDragEnd = (result: DropResult) => {
     const { destination, source, draggableId } = result;
-
     if (!destination) return;
     if (
       destination.droppableId === source.droppableId &&
       destination.index === source.index
-    ) {
-      return;
-    }
+    ) return;
 
-    setCards(prevCards => {
-      const cardToMove = prevCards.find(c => c.id === draggableId);
-      if (!cardToMove) return prevCards;
+    setCards((prevCards) => {
+      const updatedCards = [...prevCards];
+      const draggedCardIndex = prevCards.findIndex(card => card.id === draggableId);
+      if (draggedCardIndex === -1) return prevCards;
 
-      const updatedCards = prevCards.map(card =>
-        card.id === draggableId
-          ? { ...card, columnId: destination.droppableId }
-          : card
-      );
+      const draggedCard = { ...prevCards[draggedCardIndex], columnId: destination.droppableId };
+
+      updatedCards.splice(draggedCardIndex, 1); // remove from old position
+      updatedCards.splice(destination.index, 0, draggedCard); // insert at new position
+
       return updatedCards;
     });
   };
@@ -45,59 +50,41 @@ function App() {
     setSelectedCard(card);
   };
 
-  const handleSaveCard = (updatedCard: Card) => {
-    setCards(prev =>
-      prev.map(card => (card.id === updatedCard.id ? updatedCard : card))
-    );
-    setSelectedCard(null);
-  };
-
-
-  const handleDeleteCard = (cardId: string) => {
-    setCards(prev => prev.filter(card => card.id !== cardId));
-    setSelectedCard(null);
-  };
-
-  
   const handleAddCard = (columnId: string) => {
-    const newCard: Card = {
-      id: Date.now().toString(),
-      title: 'New Card',
-      description: '',
-      columnId,
-    };
-    setCards(prev => [...prev, newCard]);
+    setCreatingCardForColumn(columnId);
   };
+
+
+  // Other handlers for save, delete, update cards...
 
   return (
-    <>
-      <DragDropContext onDragEnd={handleDragEnd}>
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <Board
-                columns={initialColumns}
-                cards={cards}
-                onCardClick={handleCardClick}
-                onAddCard={handleAddCard}
-                onDelete={handleDeleteCard}
-              />
-            }
-          />
-        </Routes>
-      </DragDropContext>
-
-  
-      {selectedCard && (
-        <CardModal
-          card={selectedCard}
-          onClose={() => setSelectedCard(null)}
-          onSave={handleSaveCard}
-          onDelete={handleDeleteCard}
+    <DragDropContext onDragEnd={handleDragEnd}>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <Board
+              columns={columns}
+              cards={cards}
+              onCardClick={handleCardClick}
+              onAddCard={handleAddCard}
+            />
+          }
         />
-      )}
-    </>
+
+        <Route
+          path="/column/:columnId"
+          element={
+            <ColumnView
+              columns={columns}
+              cards={cards}
+              onCardClick={handleCardClick}
+              onAddCard={handleAddCard}
+            />
+          }
+        />
+      </Routes>
+    </DragDropContext>
   );
 }
 

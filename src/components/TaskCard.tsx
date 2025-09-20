@@ -1,29 +1,25 @@
-import { useState } from "react";
-import TaskModal from "./TaskModal";
-import "../main.css";
-import type {Task , TaskProps} from "../types";
+import React from "react";
+import type { Task } from "../types";
 
+interface TaskCardProps {
+  task: Task;
+  onRemove: (id: number) => void;
+  onUpdate?: (updatedTask: Task) => void;
+  onClick?: () => void;
+}
 
-const TaskCard = ({ task, onRemove, onUpdate }: TaskProps) => {
-  const [modalOpen, setModalOpen] = useState(false);
+const TaskCard: React.FC<TaskCardProps> = ({ task, onRemove, onUpdate, onClick }) => {
+  const handleRemove = (e: React.MouseEvent) => {
+    e.stopPropagation(); // prevent bubbling if card has onClick
+    onRemove(task.id);
+  };
 
   return (
-    <>
-      <div className="task-card" onClick={() => setModalOpen(true)}>
-        <h4>{task.title}</h4>
-        <h5>description</h5>
-        <p>{task.description}</p>
-      </div>
-
-      {modalOpen && (
-        <TaskModal
-          task={task}
-          onClose={() => setModalOpen(false)}
-          onSave={(updatedTask) => { onUpdate(updatedTask); setModalOpen(false); }}
-          onDelete={() => { onRemove(task.id); setModalOpen(false); }}
-        />
-      )}
-    </>
+    <div className="task-card" onClick={onClick}>
+      <h3>{task.title}</h3>
+      <p>{task.description}</p>
+      <button className="task-card-remove" onClick={handleRemove}>Remove</button>
+    </div>
   );
 };
 

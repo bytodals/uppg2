@@ -1,12 +1,17 @@
-// task optional description
+
 export interface Task {
-  id: number;
+  id: number; 
   title: string;
   description?: string;
   column: string;
 }
 
-// card in a column
+
+export interface ColumnModel {
+  id: string;
+  title: string;
+}
+
 export interface Card {
   id: string;
   title: string;
@@ -14,21 +19,12 @@ export interface Card {
   columnId: string;
 }
 
-// component handling task
 export interface TaskProps {
   task: Task;
   onRemove: (id: number) => void;
   onUpdate: (task: Task) => void;
 }
 
-export interface Props {
-  task: Task;
-  onClose: () => void;
-  onSave: (task: Task) => void;
-  onDelete: () => void;
-}
-
-//modal handling Card
 export interface CardModalProps {
   card: Card;
   onClose: () => void;
@@ -36,17 +32,15 @@ export interface CardModalProps {
   onDelete?: (cardId: string) => void;
 }
 
-// column on board
-export interface Column {
-  id: string;
-  title: string;
-}
-
-//rendering columns and cards
 export interface BoardProps {
-  columns: Column[];
+  columns: ColumnModel[];
   cards: Card[];
   onCardClick: (card: Card) => void;
   onAddCard: (columnId: string) => void;
   onDelete?: (cardId: string) => void;
+}
+
+export interface ColumnComponentProps {
+  title: string;
+  column: string;
 }
