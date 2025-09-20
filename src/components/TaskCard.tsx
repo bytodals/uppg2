@@ -2,16 +2,24 @@ import React from "react";
 import type { DraggableProvided } from "@hello-pangea/dnd";
 import type { Task } from "../types";
 
-
 type Props = {
   task: Task;
   index: number;
   onCardClick: (task: Task) => void;
   onDeleteCard: (taskId: string) => void;
+  onMoveCardRight: (task: Task) => void;
+  onMoveCardLeft: (task: Task) => void;
   provided: DraggableProvided;
 };
 
-const TaskCard: React.FC<Props> = ({ task, onCardClick, onDeleteCard, provided }) => {
+const TaskCard: React.FC<Props> = ({
+  task,
+  onCardClick,
+  onDeleteCard,
+  onMoveCardRight,
+  onMoveCardLeft,
+  provided,
+}) => {
   return (
     <div
       className="card"
@@ -22,15 +30,38 @@ const TaskCard: React.FC<Props> = ({ task, onCardClick, onDeleteCard, provided }
     >
       <h3>{task.title}</h3>
       <p>{task.description}</p>
-      <button
-        className="delete-btn"
-        onClick={(e) => {
-          e.stopPropagation();
-          onDeleteCard(task.id);
-        }}
-      >
-        X
-      </button>
+
+      <div>
+        <div>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onMoveCardLeft(task);
+            }}
+          >
+            ◀
+          </button>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onMoveCardRight(task);
+            }}
+            style={{ marginLeft: "4px" }}
+          >
+            ▶
+          </button>
+        </div>
+
+        <button
+          className="delete-btn"
+          onClick={(e) => {
+            e.stopPropagation();
+            onDeleteCard(task.id);
+          }}
+        >
+          X
+        </button>
+      </div>
     </div>
   );
 };
