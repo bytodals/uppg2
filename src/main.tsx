@@ -6,6 +6,7 @@ import "./main.css";
 import "./components/CardModal.css";
 
 
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <BrowserRouter>

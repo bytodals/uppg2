@@ -1,19 +1,17 @@
-import Board from "../components/ColumnView";
-import { type Card } from "../types";
-import "../main.css";
-import "../components/CardModal.css";
+import React from "react";
+import Board from "../components/Board";
+import { TaskProvider } from "../context/TaskContext";
 
 
-const Home = () => {
-    return (
-    <div>  
-        <Board columns={[]} cards={[]} onCardClick={function (_card: Card): void {
-                throw new Error("Function not implemented.");
-            } } onAddCard={function (_columnId: string): void {
-                throw new Error("Function not implemented.");
-            } } />
-    </div>
-    );
+const Home: React.FC = () => {
+  return (
+    <TaskProvider>
+      <div className="home-page">
+        <h1>Min Kanban Board</h1>
+        <Board />
+      </div>
+    </TaskProvider>
+  );
 };
 
 export default Home;

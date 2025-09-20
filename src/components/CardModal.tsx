@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import type { Task } from "../types";
 
+
 interface CardModalProps {
   task: Task | null;
   onClose: () => void;
