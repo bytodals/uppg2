@@ -1,12 +1,6 @@
 import { useState } from "react";
 import type { Task } from "../types";
 
-interface Props {
-  task: Task;
-  onClose: () => void;
-  onSave: (task: Task) => void;
-  onDelete: () => void;
-}
 
 const TaskModal = ({ task, onClose, onSave, onDelete }: Props) => {
   const [title, setTitle] = useState(task.title);

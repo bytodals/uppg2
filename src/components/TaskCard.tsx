@@ -1,14 +1,10 @@
 import { useState } from "react";
-import type { Task } from "../types";
 import TaskModal from "./TaskModal";
+import "../main.css";
+import type {Task , TaskProps} from "../types";
 
-interface Props {
-  task: Task;
-  onRemove: (id: number) => void;
-  onUpdate: (task: Task) => void;
-}
 
-const TaskCard = ({ task, onRemove, onUpdate }: Props) => {
+const TaskCard = ({ task, onRemove, onUpdate }: TaskProps) => {
   const [modalOpen, setModalOpen] = useState(false);
 
   return (

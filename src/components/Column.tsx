@@ -1,63 +1,56 @@
-import { useState } from "react";
-import TaskCard from "./TaskCard";
-import { useTasks } from "../context/TaskContext";
-import { Droppable, Draggable } from "@hello-pangea/dnd";
+import React from 'react';
+import { Droppable, Draggable } from '@hello-pangea/dnd';
+import type { BoardProps, Props } from '../types'; 
 
-interface Props {
-  title: string;
-  column: string;
-}
-
-const Column = ({ title, column }: Props) => {
-  const { tasks, addTask, removeTask, updateTask } = useTasks();
-  const [newTitle, setNewTitle] = useState("");
-
-  const filtered = tasks.filter((t) => t.column === column);
-
-  const handleAdd = () => {
-    if (!newTitle.trim()) return;
-    addTask({
-      id: Date.now(),
-      title: newTitle,
-      column,
-    });
-    setNewTitle("");
-  };
-
+const Column: React.FC<BoardProps> = ({ columns, cards, onCardClick, onAddCard }) => {
   return (
-    <div className="column">
-      <h2>{title}</h2>
-      <div style={{ marginBottom: "1rem" }}>
-        <input
-          type="text"
-          value={newTitle}
-          onChange={(e) => setNewTitle(e.target.value)}
-          placeholder={`New task`}
-          onKeyDown={(e) => e.key === "Enter" && handleAdd()}
-        />
-        <button onClick={handleAdd}>add</button>
-      </div>
+      {columns.map((column) => {
+        const cardsInColumn = cards.filter((card) => card.columnId === column.id);
 
-      <Droppable droppableId={column}>
-        {(provided) => (
-          <div {...provided.droppableProps} ref={provided.innerRef}>
-            {filtered.map((task, index) => (
-              <Draggable key={task.id} draggableId={task.id.toString()} index={index}>
-                {(provided) => (
-                  <div
-                    ref={provided.innerRef}
-                    {...provided.draggableProps}
-                    {...provided.dragHandleProps}
-                  >
-                    <TaskCard task={task} onRemove={removeTask} onUpdate={updateTask} />
-                  </div>
-                )}
-              </Draggable>
-            ))}
-            {provided.placeholder}
-          </div>
-        )}
-      </Droppable>
+        return (
+          <Droppable key={column.id} droppableId={column.id}>
+            {(provided) => (
+              <div
+                {...provided.droppableProps}
+                ref={provided.innerRef}
+                style={styles.column}
+              >
+                <h2>{column.title}</h2>
+
+                {cardsInColumn.map((card, index) => (
+                  <Draggable key={card.id} draggableId={card.id} index={index}>
+                    {(provided) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        onClick={() => onCardClick(card)}
+                        style={{
+                          ...styles.card,
+                          ...provided.draggableProps.style,
+                        }}
+                      >
+                        <h3>{card.title}</h3>
+                        <p>{card.description}</p>
+                      </div>
+                    )}
+                  </Draggable>
+                ))}
+
+                {provided.placeholder}
+
+                <button
+                  onClick={() => onAddCard(column.id)}
+                  style={styles.addButton}
+                  aria-label={`Add card to ${column.title}`}
+                >
+                  +
+                </button>
+              </div>
+            )}
+          </Droppable>
+        );
+      })}
     </div>
   );
 };
