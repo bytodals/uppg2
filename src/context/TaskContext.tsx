@@ -1,52 +1,40 @@
-import React, { createContext, useContext, useReducer, ReactNode } from "react";
+import React, { createContext, useContext, useState, ReactNode } from "react";
 import type { Task } from "../types";
 
-type Action =
-  | { type: "ADD_TASK"; payload: Task }
-  | { type: "DELETE_TASK"; payload: string }
-  | { type: "UPDATE_TASK"; payload: Task }
-  | { type: "MOVE_TASK"; payload: { id: string; newColumnId: string } };
+type TaskContextType = {
+  tasks: Task[];
+  addTask: (task: Task) => void;
+  deleteTask: (id: string) => void;
+  updateTask: (task: Task) => void;
+  moveTask: (id: string, newColumnId: string) => void;
+};
 
-type State = { tasks: Task[] };
+const TaskContext = createContext<TaskContextType | undefined>(undefined);
 
-const initialState: State = {
-  tasks: [
+export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [tasks, setTasks] = useState<Task[]>([
     { id: "1", title: "Kort 1", description: "Beskrivning 1", columnId: "col-1" },
     { id: "2", title: "Kort 2", description: "Beskrivning 2", columnId: "col-1" },
     { id: "3", title: "Kort 3", description: "Beskrivning 3", columnId: "col-1" },
     { id: "a", title: "Kort A", description: "Beskrivning A", columnId: "col-2" },
     { id: "b", title: "Kort B", description: "Beskrivning B", columnId: "col-2" },
     { id: "c", title: "Kort C", description: "Beskrivning C", columnId: "col-3" }
-  ],
-};
+  ]);
 
-function reducer(state: State, action: Action): State {
-  switch (action.type) {
-    case "ADD_TASK":
-      return { tasks: [...state.tasks, action.payload] };
-    case "DELETE_TASK":
-      return { tasks: state.tasks.filter((t) => t.id !== action.payload) };
-    case "UPDATE_TASK":
-      return { tasks: state.tasks.map((t) => t.id === action.payload.id ? action.payload : t) };
-    case "MOVE_TASK":
-      return {
-        tasks: state.tasks.map((t) =>
-          t.id === action.payload.id ? { ...t, columnId: action.payload.newColumnId } : t
-        )
-      };
-    default:
-      return state;
-  }
-}
+  const addTask = (task: Task) => setTasks((prev) => [...prev, task]);
+  const deleteTask = (id: string) => setTasks((prev) => prev.filter((t) => t.id !== id));
+  const updateTask = (updatedTask: Task) =>
+    setTasks((prev) => prev.map((t) => (t.id === updatedTask.id ? updatedTask : t)));
+  const moveTask = (id: string, newColumnId: string) =>
+    setTasks((prev) =>
+      prev.map((t) => (t.id === id ? { ...t, columnId: newColumnId } : t))
+    );
 
-const TaskContext = createContext<{
-  state: State;
-  dispatch: React.Dispatch<Action>;
-} | undefined>(undefined);
-
-export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [state, dispatch] = useReducer(reducer, initialState);
-  return <TaskContext.Provider value={{ state, dispatch }}>{children}</TaskContext.Provider>;
+  return (
+    <TaskContext.Provider value={{ tasks, addTask, deleteTask, updateTask, moveTask }}>
+      {children}
+    </TaskContext.Provider>
+  );
 };
 
 export const useTasks = () => {
