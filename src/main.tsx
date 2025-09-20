@@ -1,16 +1,11 @@
 import React from "react";
-import ReactDOM from "react-dom/client";
-import { BrowserRouter } from "react-router-dom";
+import ReactDOM from "react-dom";
 import App from "./App";
-import "./main.css";
-import "./components/CardModal.css";
+import { TaskProvider } from "./context/TaskContext";
 
-
-
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </React.StrictMode>
+ReactDOM.render(
+  <TaskProvider>
+    <App />
+  </TaskProvider>,
+  document.getElementById("root")
 );
