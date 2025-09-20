@@ -4,15 +4,24 @@ import TaskCard from "./TaskCard";
 import type { Column, Task } from "../types";
 import { useTasks } from "../context/TaskContext";
 
-
 type ColumnViewProps = {
   columns: Column[];
   onCardClick: (task: Task) => void;
   onAddCard: (columnId: string) => void;
+  onMoveCardRight: (task: Task) => void;
+  onMoveCardLeft: (task: Task) => void;
+  onDeleteCard: (id: string) => void;
 };
 
-const ColumnView: React.FC<ColumnViewProps> = ({ columns, onCardClick, onAddCard }) => {
-  const { tasks, deleteTask } = useTasks();
+const ColumnView: React.FC<ColumnViewProps> = ({
+  columns,
+  onCardClick,
+  onAddCard,
+  onMoveCardRight,
+  onMoveCardLeft,
+  onDeleteCard,
+}) => {
+  const { tasks } = useTasks();
 
   return (
     <>
@@ -32,7 +41,9 @@ const ColumnView: React.FC<ColumnViewProps> = ({ columns, onCardClick, onAddCard
                         task={task}
                         index={index}
                         onCardClick={onCardClick}
-                        onDeleteCard={deleteTask}
+                        onDeleteCard={onDeleteCard}
+                        onMoveCardRight={onMoveCardRight}
+                        onMoveCardLeft={onMoveCardLeft}
                         provided={provided}
                       />
                     )}
