@@ -6,7 +6,6 @@ const ColumnPage: React.FC = () => {
   return (
     <TaskProvider>
       <div className="column-page">
-        <h1>Min Kanban Board</h1>
         <Board />
       </div>
     </TaskProvider>

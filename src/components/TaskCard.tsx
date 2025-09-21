@@ -33,33 +33,17 @@ const TaskCard: React.FC<Props> = ({
 
       <div>
         <div>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onMoveCardLeft(task);
-            }}
-          >
+          <button className= "arrow" onClick={(e) => {e.stopPropagation();onMoveCardLeft(task);}}>
             ◀
           </button>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onMoveCardRight(task);
-            }}
-            style={{ marginLeft: "4px" }}
-          >
+
+          <button className= "arrow" onClick={(e) => {e.stopPropagation();onMoveCardRight(task);}}>
             ▶
           </button>
         </div>
 
-        <button
-          className="delete-btn"
-          onClick={(e) => {
-            e.stopPropagation();
-            onDeleteCard(task.id);
-          }}
-        >
-          X
+        <button className="delete-btn"onClick={(e) => {e.stopPropagation();onDeleteCard(task.id);}}>
+          remove
         </button>
       </div>
     </div>
