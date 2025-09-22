@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useTasks } from "../context/TaskContext";
 import type { Task } from "../types";
 import "../App.css";
+import "../components/CardModal.css";
 
 interface CardModalProps {
   task: Task | null;
@@ -9,7 +9,7 @@ interface CardModalProps {
 }
 
 const CardModal: React.FC<CardModalProps> = ({ task, onClose }) => {
-  const { updateTask, deleteTask } = useTasks(); 
+  const { updateTask, deleteTask } = useTaskc(); 
 
   const [title, setTitle] = useState(task?.title || "");
   const [description, setDescription] = useState(task?.description || "");
@@ -90,3 +90,7 @@ const CardModal: React.FC<CardModalProps> = ({ task, onClose }) => {
 };
 
 export default CardModal;
+function useTaskc(): { updateTask: any; deleteTask: any; } {
+  throw new Error("Function not implemented.");
+}
+

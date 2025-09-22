@@ -12,16 +12,24 @@ type ColumnViewProps = {
   onMoveCardRight: (id: string) => void;
 };
 
-const ColumnView: React.FC<ColumnViewProps> = ({ columns, tasks, onCardClick, onAddCard, onDeleteCard, onMoveCardLeft, onMoveCardRight }) => (
+const ColumnView: React.FC<ColumnViewProps> = ({ columns, tasks, onAddCard, onDeleteCard, onMoveCardLeft, onMoveCardRight }) => (
   <>
     {columns.map(column => {
       const tasksInColumn = tasks.filter(task => task.columnId === column.id);
+      function handleTitleClick(task: Task): void {
+        throw new Error("Function not implemented.");
+      }
+
       return (
         <div key={column.id} className="column">
           <h2>{column.title}</h2>
           {tasksInColumn.map(task => (
             <div key={task.id} className="card-wrapper">
-              <TaskCard task={task} onCardClick={onCardClick} onDeleteCard={onDeleteCard} />
+              <TaskCard task={task}  onOpenModal={() => handleTitleClick(task)} onDeleteCard={onDeleteCard} onMoveLeft={function (): void {
+                throw new Error("Function not implemented.");
+              } } onMoveRight={function (): void {
+                throw new Error("Function not implemented.");
+              } } />
               <div className="card-buttons">
                 {column.id !== "col-1" && <button onClick={() => onMoveCardLeft(task.id)}>←</button>}
                 {column.id !== "col-3" && <button onClick={() => onMoveCardRight(task.id)}>→</button>}
