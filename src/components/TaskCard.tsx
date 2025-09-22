@@ -1,5 +1,6 @@
 import React from "react";
 import type { Task } from "../types";
+import "../App.css";
 
 type TaskCardProps = {
   task: Task;
@@ -18,14 +19,14 @@ const TaskCard: React.FC<TaskCardProps> = ({
 }) => {
   return (
     <div className="card">
-      <h3 onClick={onOpenModal} style={{ cursor: "pointer", color: "blue" }}>
+      <h3 onClick={onOpenModal}>
         {task.title}
       </h3>
       <p>{task.description}</p>
       <div className="card-buttons">
-        <button onClick={() => onMoveLeft(task.id)}>⬅️</button>
-        <button onClick={() => onMoveRight(task.id)}>➡️</button>
-        <button onClick={() => onDeleteCard(task.id)}>🗑️</button>
+        <button onClick={() => onMoveLeft(task.id)}>🠸</button>
+        <button onClick={() => onMoveRight(task.id)}>🠺</button>
+        <button onClick={() => onDeleteCard(task.id)}>⌫</button>
       </div>
     </div>
   );

@@ -1,20 +1,20 @@
 import React, { createContext, useState, useContext, type ReactNode } from "react";
 import type { Task, Column } from "../types";
 
-type TaskContextType = {
-  tasks: Task[];
-  columns: Column[];
-  setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
-  setColumns: React.Dispatch<React.SetStateAction<Column[]>>;
-};
+  type TaskContextType = {
+    tasks: Task[];
+    columns: Column[];
+    setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
+    setColumns: React.Dispatch<React.SetStateAction<Column[]>>;
+  };
 
-const TaskContext = createContext<TaskContextType | undefined>(undefined);
+  const TaskContext = createContext<TaskContextType | undefined>(undefined);
 
-export const TaskProvider = ({ children }: { children: ReactNode }) => {
-  const [columns, setColumns] = useState<Column[]>([
-    { id: "1", title: "To Do" },
-    { id: "2", title: "In Progress" },
-    { id: "3", title: "Done" },
+  export const TaskProvider = ({ children }: { children: ReactNode }) => {
+    const [columns, setColumns] = useState<Column[]>([
+      { id: "1", title: "To Do" },
+      { id: "2", title: "In Progress" },
+      { id: "3", title: "Done" },
   ]);
 
   const [tasks, setTasks] = useState<Task[]>([
@@ -28,10 +28,10 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
       {children}
     </TaskContext.Provider>
   );
-};
+  };
 
-export const useTaskContext = () => {
-  const context = useContext(TaskContext);
-  if (!context) throw new Error("useTaskContext must be used within TaskProvider");
-  return context;
-};
+  export const useTaskContext = () => {
+    const context = useContext(TaskContext);
+      if (!context) throw new Error("useTaskContext must be used within TaskProvider");
+      return context;
+  };

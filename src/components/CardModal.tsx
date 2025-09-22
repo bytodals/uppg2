@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import type { Task } from "../types";
 import "../App.css";
-import "../components/CardModal.css";
 
 interface CardModalProps {
   task: Task | null;

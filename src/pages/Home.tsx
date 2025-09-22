@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import BoardProps from "../components/Board";
 import { TaskProvider } from "../context/TaskContext";
+import "../App.css";
 
 const Home: React.FC = () => (
   <TaskProvider>

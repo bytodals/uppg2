@@ -4,25 +4,26 @@ import TaskCard from "../components/TaskCard";
 import TaskModal from "../components/TaskModal";
 import { useTaskContext } from "../context/TaskContext";
 import type { Task, Column } from "../types";
+import "../App.css";
 
-const ColumnPage: React.FC = () => {
+  const ColumnPage: React.FC = () => {
   const { tasks, columns, setTasks } = useTaskContext();
   const navigate = useNavigate();
   const { columnId } = useParams<{ columnId: string }>();
 
   const handleColumnClick = (column: Column) => {
-  navigate(`/columns/${column.id}`);
-};
+    navigate(`/columns/${column.id}`);
+  };
 
-const handleAddTask = (columnId: string) => {
+  const handleAddTask = (columnId: string) => {
   const newTask: Task = {
     id: Date.now().toString(), 
     title: "New Task",
     description: "",
     columnId: columnId,
   };
-  setTasks([...tasks, newTask]);
-};
+    setTasks([...tasks, newTask]);
+  };
 
   const [selectedColumn, setSelectedColumn] = useState<Column | null>(null);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
@@ -52,75 +53,76 @@ const handleAddTask = (columnId: string) => {
   const handleDeleteTask = (taskId: string) => {
     setTasks(tasks.filter((t) => t.id !== taskId));
   };
-const handleMoveLeft = (taskId: string) => {
-  setTasks(prev =>
-    prev.map(t => {
-      if (t.id !== taskId) return t;
-      const currentIndex = columns.findIndex(c => c.id === t.columnId);
-      if (currentIndex > 0) {
-        return { ...t, columnId: columns[currentIndex - 1].id };
-      }
-      return t;
-    })
-  );
-};
 
-const handleMoveRight = (taskId: string) => {
-  setTasks(prev =>
-    prev.map(t => {
+  const handleMoveLeft = (taskId: string) => {
+    setTasks(prev =>
+      prev.map(t => {
       if (t.id !== taskId) return t;
-      const currentIndex = columns.findIndex(c => c.id === t.columnId);
+        const currentIndex = columns.findIndex(c => c.id === t.columnId);
+      if (currentIndex > 0) {
+        return { ...t, columnId: columns[currentIndex - 1].id };}
+        return t;
+        })
+    );
+  };
+
+  const handleMoveRight = (taskId: string) => {
+    setTasks(prev =>
+      prev.map(t => {
+      if (t.id !== taskId) return t;
+        const currentIndex = columns.findIndex(c => c.id === t.columnId);
       if (currentIndex < columns.length - 1) {
         return { ...t, columnId: columns[currentIndex + 1].id };
       }
       return t;
     })
   );
-};
+  };
 
- 
- const columnsToRender = selectedColumn ? [selectedColumn] : columns;
 
-if (!columnsToRender.length) {
-  return <div className="error">Column not found</div>;
-}
-return (
-  <div className="columns-container">
-    {columnsToRender.map((column) => (
+  const columnsToRender = selectedColumn ? [selectedColumn] : columns;
+    if (!columnsToRender.length) {
+    return <div className="error">column not found</div>;
+    }
+
+  return (
+      <div className="columns-container">
+        {columnsToRender.map((column) => (
       <div key={column.id} className="column">
-        <h2 onClick={() => handleColumnClick(column)}>
-          {column.title}
-        </h2>
+      {selectedColumn && (
+        <button className="back-button" onClick={() => navigate(-1)}> back </button>
+      )}
 
-        <button onClick={() => handleAddTask(column.id)}>
-          + Add Task
-        </button>
+      <h2 onClick={() => handleColumnClick(column)}>
+        {column.title} </h2>
 
-        {tasks
-          .filter((task) => task.columnId === column.id)
-          .map((task) => (
-            <TaskCard
-              key={task.id}
-              task={task}
-              onOpenModal={() => handleTitleClick(task)}
-              onDeleteCard={handleDeleteTask}
-              onMoveLeft={handleMoveLeft}
-              onMoveRight={handleMoveRight}
-            />
-          ))}
+      <button className="back-button" onClick={() => handleAddTask(column.id)}>+</button>
+
+      {tasks
+        .filter((task) => task.columnId === column.id)
+        .map((task) => (
+          <TaskCard
+            key={task.id}
+            task={task}
+            onOpenModal={() => handleTitleClick(task)}
+            onDeleteCard={handleDeleteTask}
+            onMoveLeft={handleMoveLeft}
+            onMoveRight={handleMoveRight}
+          />
+        ))}
       </div>
-    ))}
+        ))}
 
-    {selectedTask && (
-      <TaskModal
-        task={selectedTask}
-        onClose={handleCloseModal}
-        onSave={handleSaveTask}
-      />
-    )}
+  {selectedTask && (
+    <TaskModal
+      task={selectedTask}
+      onClose={handleCloseModal}
+      onSave={handleSaveTask}
+    />
+  )}
   </div>
-);
+  );
 
-};
+  };
 
 export default ColumnPage;
