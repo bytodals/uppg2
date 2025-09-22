@@ -1,64 +1,26 @@
 import React, { useState, useEffect } from "react";
-import { useTasks } from "../context/TaskContext";
 import type { Task } from "../types";
+import { useTasks } from "../context/TaskContext";
 
-interface TaskModalProps {
-  task: Task | null;
-  onClose: () => void;
-}
-
-const TaskModal: React.FC<TaskModalProps> = ({ task, onClose }) => {
-  const { updateTask, deleteTask } = useTasks();
-
+type Props = { task: Task | null };
+const TaskModal: React.FC<Props> = ({ task }) => {
+  const { updateTask, closeModal } = useTasks();
   const [title, setTitle] = useState(task?.title || "");
   const [description, setDescription] = useState(task?.description || "");
 
-  useEffect(() => {
-    setTitle(task?.title || "");
-    setDescription(task?.description || "");
-  }, [task]);
-
-  const handleSave = () => {
-    if (!task) return;
-
-    updateTask({
-      ...task,
-      title: title.trim(),
-      description: description.trim(),
-    });
-
-    onClose();
-  };
-
-  const handleDelete = () => {
-    if (!task) return;
-
-    deleteTask(task.id);
-    onClose();
-  };
-
+  useEffect(() => { setTitle(task?.title || ""); setDescription(task?.description || ""); }, [task]);
   if (!task) return null;
+  const handleSave = () => { updateTask({ ...task, title, description }); closeModal(); };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <h2>edit</h2>
-
-        <label>
-          title
-          <input type="text"value={title}onChange={(e) => setTitle(e.target.value)}className="modal-input"/>
-        </label>
-
-        <label> 
-          Description <textarea value={description}onChange={(e) => setDescription(e.target.value)}className="modal-textarea"/>
-        </label>
-
-        <div className="modal-actions">
-          <button onClick={onClose} className="modal-button cancel">x</button>
-
-          <button onClick={handleSave} disabled={!title.trim()}className="modal-button save">save</button>
-
-          <button onClick={handleDelete} className="modal-button delete">delete</button>
+    <div className="modal-overlay" onClick={closeModal}>
+      <div className="modal-content" onClick={e => e.stopPropagation()}>
+        <h2>Edit Task</h2>
+        <label>Title<input type="text" value={title} onChange={e => setTitle(e.target.value)} /></label>
+        <label>Description<textarea value={description} onChange={e => setDescription(e.target.value)} /></label>
+        <div>
+          <button onClick={closeModal}>Cancel</button>
+          <button onClick={handleSave} disabled={!title.trim()}>Save</button>
         </div>
       </div>
     </div>
@@ -66,4 +28,3 @@ const TaskModal: React.FC<TaskModalProps> = ({ task, onClose }) => {
 };
 
 export default TaskModal;
-

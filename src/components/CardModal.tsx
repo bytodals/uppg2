@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useTasks } from "../context/TaskContext";
 import type { Task } from "../types";
+import "../App.css";
 
 interface CardModalProps {
   task: Task | null;
@@ -8,7 +9,7 @@ interface CardModalProps {
 }
 
 const CardModal: React.FC<CardModalProps> = ({ task, onClose }) => {
-  const { updateTask, deleteTask } = useTasks(); // hämtar funktioner från TaskContext
+  const { updateTask, deleteTask } = useTasks(); 
 
   const [title, setTitle] = useState(task?.title || "");
   const [description, setDescription] = useState(task?.description || "");
@@ -46,7 +47,7 @@ const CardModal: React.FC<CardModalProps> = ({ task, onClose }) => {
     >
       <div
         onClick={(e) => e.stopPropagation()}
-       
+
       >
         <h2>Edit Card</h2>
 

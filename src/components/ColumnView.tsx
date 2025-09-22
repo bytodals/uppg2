@@ -1,67 +1,38 @@
 import React from "react";
-import { Droppable, Draggable } from "@hello-pangea/dnd";
 import TaskCard from "./TaskCard";
 import type { Column, Task } from "../types";
-import { useTasks } from "../context/TaskContext";
 
 type ColumnViewProps = {
   columns: Column[];
+  tasks: Task[];
   onCardClick: (task: Task) => void;
   onAddCard: (columnId: string) => void;
-  onMoveCardRight: (task: Task) => void;
-  onMoveCardLeft: (task: Task) => void;
   onDeleteCard: (id: string) => void;
+  onMoveCardLeft: (id: string) => void;
+  onMoveCardRight: (id: string) => void;
 };
 
-const ColumnView: React.FC<ColumnViewProps> = ({
-  columns,
-  onCardClick,
-  onAddCard,
-  onMoveCardRight,
-  onMoveCardLeft,
-  onDeleteCard,
-}) => {
-  const { tasks } = useTasks();
-
-  return (
-    <>
-      {columns.map((column) => {
-        const cardsInColumn = tasks.filter((task) => task.columnId === column.id);
-
-        return (
-          <Droppable key={column.id} droppableId={column.id}>
-            {(provided) => (
-              <div className="column" {...provided.droppableProps} ref={provided.innerRef}>
-                <h2>{column.title}</h2>
-
-                {cardsInColumn.map((task, index) => (
-                  <Draggable key={task.id} draggableId={task.id} index={index}>
-                    {(provided) => (
-                      <TaskCard
-                        task={task}
-                        index={index}
-                        onCardClick={onCardClick}
-                        onDeleteCard={onDeleteCard}
-                        onMoveCardRight={onMoveCardRight}
-                        onMoveCardLeft={onMoveCardLeft}
-                        provided={provided}
-                      />
-                    )}
-                  </Draggable>
-                ))}
-
-                {provided.placeholder}
-
-                <button className="add-card-button" onClick={() => onAddCard(column.id)}>
-                  Add Card
-                </button>
+const ColumnView: React.FC<ColumnViewProps> = ({ columns, tasks, onCardClick, onAddCard, onDeleteCard, onMoveCardLeft, onMoveCardRight }) => (
+  <>
+    {columns.map(column => {
+      const tasksInColumn = tasks.filter(task => task.columnId === column.id);
+      return (
+        <div key={column.id} className="column">
+          <h2>{column.title}</h2>
+          {tasksInColumn.map(task => (
+            <div key={task.id} className="card-wrapper">
+              <TaskCard task={task} onCardClick={onCardClick} onDeleteCard={onDeleteCard} />
+              <div className="card-buttons">
+                {column.id !== "col-1" && <button onClick={() => onMoveCardLeft(task.id)}>←</button>}
+                {column.id !== "col-3" && <button onClick={() => onMoveCardRight(task.id)}>→</button>}
               </div>
-            )}
-          </Droppable>
-        );
-      })}
-    </>
-  );
-};
+            </div>
+          ))}
+          <button className="add-card-button" onClick={() => onAddCard(column.id)}>Add Card</button>
+        </div>
+      );
+    })}
+  </>
+);
 
 export default ColumnView;
